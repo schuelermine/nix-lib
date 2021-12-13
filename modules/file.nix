@@ -1,5 +1,5 @@
 { lib }: rec {
-  getFilesR = dir:
+  getFilesRecursive = dir:
     builtins.concatLists (builtins.attrValues (builtins.mapAttrs (name: type:
       if builtins.elem type [ "symlink" "directory" ] then
         let attempt = builtins.tryEval (getFilesR (dir + "/${name}"));
