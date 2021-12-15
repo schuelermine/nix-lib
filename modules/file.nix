@@ -1,12 +1,12 @@
 { self }: rec {
   getFilesRecursive = dir:
-    builtins.concatLists (builtins.attrValues (builtins.mapAttrs (name: type:
-      if builtins.elem type [ "symlink" "directory" ] then
-        let attempt = builtins.tryEval (getFilesRecursive (dir + "/${name}"));
-        in if attempt.success then
-          map (name2: name + "/" + name2) attempt.value
-        else
-          [ ]
-      else
-        [ name ]) (builtins.readDir dir)));
+    builtins.foldl' (s1: s2: s1 // s2) { } (builtins.concatLists
+      (builtins.attrValues (builtins.mapAttrs (name: type:
+        if type == "directory" then
+          builtins.attrValues
+          (builtins.mapAttrs (name2: type2: { ${name + "/" + name2} = type2; })
+            (getFilesRecursive (dir + "/${name}")))
+        else [{
+          ${name} = type;
+        }]) (builtins.readDir dir))));
 }
