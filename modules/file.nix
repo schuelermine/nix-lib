@@ -1,4 +1,4 @@
-{ lib }: rec {
+{ self }: rec {
   getFilesRecursive = dir:
     builtins.concatLists (builtins.attrValues (builtins.mapAttrs (name: type:
       if builtins.elem type [ "symlink" "directory" ] then

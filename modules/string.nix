@@ -1,4 +1,4 @@
-{ lib }: rec {
+{ self }: rec {
   chars = str:
     builtins.concatLists
     (map (x: if builtins.isList x then x else if x == "" then [ ] else [ x ])
