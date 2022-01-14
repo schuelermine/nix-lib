@@ -12,6 +12,7 @@ with self; rec {
   mapToValues = f: s: builtins.attrValues (builtins.mapAttrs f s);
   mapOverValues = f: builtins.mapAttrs (_: f);
   mapOverNames = f: mapX (k: v: { ${f k} = v; });
+  filter = p: mapX (k: v: { ${if p k v then k else null} = v; });
   flatten = flattenWith (_: x: x);
   flattenR = flattenRWith (_: x: x);
   flattenDot = flattenWith (x: y: "${x}.${y}");
