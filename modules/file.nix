@@ -8,8 +8,8 @@ with self; rec {
       (builtins.attrValues (builtins.mapAttrs (name: type:
         if type == "directory" then
           builtins.attrValues
-          (builtins.mapAttrs (name2: type2: { ${name + "/" + name2} = type2; })
-            (readDirRecursiveWith f (f dir name)))
+          (builtins.mapAttrs (name2: type2: { ${f name name2} = type2; })
+            (readDirRecursiveWith f (dir + "/${name}")))
         else [{
           ${name} = type;
         }]) (builtins.readDir dir))));
