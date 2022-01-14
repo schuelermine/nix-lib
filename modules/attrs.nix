@@ -17,5 +17,9 @@ with self; rec {
     mapX (k: v: if builtins.isAttrs v then mapOverNames (f k) v else v);
   flattenWithR = f:
     mapX (k: v:
-      if builtins.isAttrs v then mapOverNames (f k) (flattenWithR f v) else v);
+      if builtins.isAttrs v then
+        mapOverNames (f k) (flattenWithR f v)
+      else {
+        ${k} = v;
+      });
 }
