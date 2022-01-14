@@ -1,9 +1,7 @@
-{ self }: rec {
+self:
+with self; rec {
   merge = s1: s2: s1 // s2;
-  toList = mapToValues (k: v: {
-    name = k;
-    value = v;
-  });
+  toList = mapToValues (name: value: { inherit name value; });
   toItems = mapToValues (k: v: [ k v ]);
   itemToPair = s: [ s.name s.value ];
   fromItem = s: { ${s.name or null} = s.value; };
@@ -12,8 +10,12 @@
   mapViaItems = f: s: builtins.listToAttrs (mapToValues f s);
   mapX = f: s: mergeList (mapToValues f s);
   mapToValues = f: s: builtins.attrValues (builtins.mapAttrs f s);
-  mapOverValues = f: builtins.mapAttrs (k: f);
+  mapOverValues = f: builtins.mapAttrs (_: f);
   mapOverNames = f: mapX (k: v: { ${f k} = v; });
-  flatten = flattenWith (x1: x2: x2);
-  flattenWith = f: mapX (k: mapOverNames (f k));
+  flatten = flattenWith (_: x: x);
+  flattenWith = f:
+    mapX (k: v: if builtins.isAttrs v then mapOverNames (f k) v else v);
+  flattenWithR = f:
+    mapX (k: v:
+      if builtins.isAttrs v then mapOverNames (f k) (flattenWithR f v) else v);
 }

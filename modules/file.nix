@@ -1,4 +1,5 @@
-{ self }: rec {
+self:
+with self; rec {
   getFilesRecursive = dir:
     builtins.foldl' (s1: s2: s1 // s2) { } (builtins.concatLists
       (builtins.attrValues (builtins.mapAttrs (name: type:
