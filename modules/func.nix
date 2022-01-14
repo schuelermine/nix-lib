@@ -20,7 +20,6 @@ with self; rec {
     Y = f: (x: f (x x)) (x: f (x x));
     Y' = (x: y: x y x) (x: y: x (y x y));
     T = (x: y: y (x x y)) (x: y: y (x x y));
-    Z = f: (x: f (v: x x v)) (x: f (v: x x v));
     N = B M (B (B M) B);
   };
 }
