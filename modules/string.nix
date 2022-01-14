@@ -3,9 +3,9 @@
     builtins.concatLists
     (map (x: if builtins.isList x then x else if x == "" then [ ] else [ x ])
       (builtins.split "" str));
-  concatStrings = strs: builtins.foldl' (x: y: x + y) "" strs;
-  escapeRegexChar = ch:
-    if builtins.elem ch [
+  concat = builtins.foldl' (x: y: x + y) "";
+  escapeRegexChar = char:
+    if builtins.elem char [
       "["
       "]"
       "."
@@ -23,8 +23,9 @@
       "^"
       "|"
     ] then
-      "\\" + ch
+      "\\" + char
     else
-      ch;
+      char;
   escapeRegex = str: concatStrings (map escapeRegexChar (chars str));
+  isChar = str: builtins.stringLength str == 1;
 }
