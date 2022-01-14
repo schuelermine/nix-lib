@@ -1,7 +1,6 @@
 self:
 with self; rec {
   id = x: x;
-  app = f: x: f x;
   const = x: _: x;
   comp = f1: f2: x: f1 (f2 x);
   flip = f: x1: x2: f x2 x1;
