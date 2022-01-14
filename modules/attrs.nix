@@ -14,6 +14,8 @@ with self; rec {
   mapOverNames = f: mapX (k: v: { ${f k} = v; });
   flatten = flattenWith (_: x: x);
   flattenR = flattenRWith (_: x: x);
+  flattenDot = flattenWith (x: y: "${x}.${y}");
+  flattenRDot = flattenRWith (x: y: "${x}.${y}");
   flattenWith = f:
     mapX (k: v: if builtins.isAttrs v then mapOverNames (f k) v else v);
   flattenRWith = f:
@@ -23,4 +25,9 @@ with self; rec {
       else {
         ${k} = v;
       });
+  navigate = path: set:
+    if path == [ ] then
+      set
+    else
+      navigate (builtins.tail path) set.${builtins.head path};
 }
