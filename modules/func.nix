@@ -1,14 +1,14 @@
 self:
 with self; rec {
   id = x: x;
-  apply = f: x: f x;
-  constant = x: _: x;
-  compose = f1: f2: x: f1 (f2 x);
+  app = f: x: f x;
+  const = x: _: x;
+  comp = f1: f2: x: f1 (f2 x);
   flip = f: x1: x2: f x2 x1;
   fix = f: let x = f x; in x;
-  applyToSelf = f: f f;
-  diagonalize = f: x: f x x;
-  combinators = rec {
+  self = f: f f;
+  diag = f: x: f x x;
+  com = rec {
     I = x: x;
     S = x: y: z: x z (y z);
     K = x: _: x;
