@@ -1,6 +1,8 @@
 self:
 with self; rec {
-  readDirRecursive = readDirRecursiveWith (dir: name: "${dir}/${name}");
+  readDirRecursive = readDirRecursiveSep "/";
+  readDirRecursiveSep = sep:
+    readDirRecursiveWith (dir: name: "${dir}${sep}${name}");
   readDirRecursiveWith = f: dir:
     builtins.foldl' (s1: s2: s1 // s2) { } (builtins.concatLists
       (builtins.attrValues (builtins.mapAttrs (name: type:
