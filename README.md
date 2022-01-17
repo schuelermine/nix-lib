@@ -4,11 +4,37 @@
 
 Anselm Schüler’s nix-lib is a standalone library of useful tools, functions, combinators and utilities for [Nix](https://nixos.org/).
 
+**Warning: You should read the section “Principles & Architecture/Versioning” before integrating nix-lib into your project.**
+
+## Usage
+
+### Importing
+
+To use nix-lib, you need to import it into your nix project.
+
+You can do that manually by copying the entire project directory, and then running `import` on the path to that directory, which will load `default.nix`.
+
+nix-lib is also a flake, which means you can easily import it into your flakes by specifiying it as an input. You can use the flake URL `github:schuelermine/nix-lib`. You could also get the flake in an impure non-flake Nix project by using `builtins.getFlake`.
+
+Here is an example flake that depends on nix-lib:
+
+```nix
+{
+  inputs.nix-lib.url = "github:schuelermine/nix-lib";
+  outputs = { nix-lib, self }:
+    nix-lib.attrs.singleton "default" "Hello, World!";
+}
+```
+
+### Content
+
+Whether you use `import` or flakes, the value you get will be an attribute set with elements for each module of nix-lib. If you get nix-lib via a flake, all of these attributes are at the top-level of the flake. Name conflicts with flake attributes such as `narHash` are avoided.
+
 ## Principles & Architecture
 
 ### Independence
 
-nix-lib is explicitly intended not to depend on nixpkgs. At least since the introduction of flakes, Nix has moved away from viewing nixpkgs as the “default” repository. I believe that independent repositories shouldn’t have to depend on nixpkgs for basic functionality, and Nix’s `builtins` namespace is sorely lacking. I also think this seperation of concerns is more elegant, so I also use it in my NixOS configurations, which certainly do depend on nixpkgs.
+nix-lib is explicitly intended not to depend on nixpkgs. At least since the introduction of flakes, Nix has moved away from viewing nixpkgs as the “default” repository. I believe that independent repositories shouldn’t have to depend on nixpkgs for basic functionality, and Nix’s `builtins` namespace is sorely lacking. I also think this seperation of concerns is more elegant; I use it in my NixOS configurations, which certainly do depend on nixpkgs.
 
 ### Flexibility
 
