@@ -42,7 +42,7 @@ All of these principles, with the possible exception of the previous one, are su
 
 ### Versioning
 
-At the moment, I take no effort to ensure any compatibility and do not use SemVer. It is assumed and recommended that you use a dependency management system such as Nix flakes that allows you to lock the version of nix-lib you are using.
+At the moment, I take no effort to ensure any compatibility and do not use SemVer. It is assumed and recommended that you use a dependency management system such as Nix flakes that allows you to lock the version of nix-lib you are using. As there are no tags, you should refer to specific versions by their commit hash.
 
 ### Structure
 
@@ -50,6 +50,4 @@ nix-lib is divided into modules. Each module is defined in a separate Nix file, 
 
 ### Naming
 
-If a module is specific to a type or class of values, their functions operating on these or relating to them should not be named to reflect the type. It is instead assumed that such functions will be called as an element of the module, whose name should serve to indicate this part of the function’s identity.
-
-For instance, `attrs.merge` is not named `mergeAttrs`.
+If a module is specific to a type or class of values, their functions operating on these or relating to them should not be named to reflect the type. It is instead assumed that such functions will be called as an element of the module, whose name should serve to indicate this part of the function’s identity. For instance, `attrs.merge` is not named `mergeAttrs`.
