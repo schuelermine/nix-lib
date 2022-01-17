@@ -46,8 +46,10 @@ At the moment, I take no effort to ensure any compatibility and do not use SemVe
 
 ### Structure
 
-nix-lib is divided into modules. Each module is defined in a separate Nix file, which is a function that takes a `self` parameter. In `default.nix` (the “bootstrap”), all module files are combined by calling them on the result of the combination of the return value of the aforementioned call. This is similar to the NixOS module system and allows all modules to use functions defined in other modules.
+nix-lib is divided into modules. Each module is defined in a separate Nix file, which is a function that take a single parameter. In `default.nix` (the “bootstrap”), all module files are combined by calling them on the result of the combination of the return value of the aforementioned call. This is similar to the NixOS module system and allows all modules to use functions defined in other modules.
 
 ### Naming
 
 If a module is specific to a type or class of values, their functions operating on these or relating to them should not be named to reflect the type. It is instead assumed that such functions will be called as an element of the module, whose name should serve to indicate this part of the function’s identity.
+
+For instance, `attrs.merge` is not named `mergeAttrs`.
