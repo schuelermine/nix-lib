@@ -26,6 +26,14 @@ with self; rec {
       else {
         ${k} = v;
       });
+  toItemsR = s:
+    builtins.concatLists (mapToValues (name: value:
+      if builtins.isAttrs value then
+        map (item: item // { loc = [ name ] ++ item.loc; }) (toItemsR value)
+      else [{
+        inherit value;
+        loc = [ name ];
+      }]) s);
   navigate = path: set:
     if path == [ ] then
       set
