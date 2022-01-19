@@ -1,6 +1,18 @@
 self:
 with self; rec {
   merge = s1: s2: s1 // s2;
+  mergeWith = f: g: h: s1: s2:
+    mergeList (map (k:
+      if s1 ? ${k} then
+        if s2 ? ${k} then {
+          ${k} = f s1.${k} s2.${k};
+        } else {
+          ${k} = g s1.${k};
+        }
+      else {
+        ${k} = h s2.${k};
+      }) ((builtins.attrNames s1) ++ builtins.attrNames s2));
+  mergeR = s1: s2: null;
   toList = mapToValues (name: value: { inherit name value; });
   toItems = mapToValues (k: v: [ k v ]);
   itemToPair = s: [ s.name s.value ];
@@ -26,10 +38,14 @@ with self; rec {
       else {
         ${k} = v;
       });
-  toItemsR = s:
+  toLocList = mapToValues (name: value: {
+    loc = [ name ];
+    inherit value;
+  });
+  toLocListR = s:
     builtins.concatLists (mapToValues (name: value:
       if builtins.isAttrs value then
-        map (item: item // { loc = [ name ] ++ item.loc; }) (toItemsR value)
+        map (item: item // { loc = [ name ] ++ item.loc; }) (toLocListR value)
       else [{
         inherit value;
         loc = [ name ];
