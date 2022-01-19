@@ -22,6 +22,7 @@ with self; rec {
   mapViaItems = f: s: builtins.listToAttrs (mapToValues f s);
   mapX = f: s: mergeList (mapToValues f s);
   mapToValues = f: s: builtins.attrValues (builtins.mapAttrs f s);
+  mapToValuesX = f: s: builtins.concatLists (mapToValues f s);
   mapOverValues = f: builtins.mapAttrs (_: f);
   mapOverNames = f: mapX (k: v: { ${f k} = v; });
   filter = p: mapX (k: v: { ${if p k v then k else null} = v; });
