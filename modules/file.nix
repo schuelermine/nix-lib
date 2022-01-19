@@ -17,4 +17,5 @@ with self; rec {
     builtins.mapAttrs (name: type:
       if type == "directory" then readDirR (dir + "/${name}") else type)
     (builtins.readDir dir);
+  readDirRFlat = func.compose attrs.toLocListR readDirR;
 }
