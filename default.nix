@@ -3,7 +3,7 @@ let
   load-module = args@{ lib, nixpkgs }:
     module:
     if builtins.isFunction module then
-      load-module args (module args) null
+      load-module args (module args)
     else if builtins.isString module then
       load-module args (./modules + "/${module}")
     else if builtins.isPath module then
