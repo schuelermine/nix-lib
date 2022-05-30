@@ -5,7 +5,7 @@ let
     if builtins.isFunction module then
       load-module deps final (module final) null
     else if builtins.isString module then
-      load-module deps final (./. + "/${module}")
+      load-module deps final (./modules + "/${module}")
     else if builtins.isPath module then
       load-module deps final (import module)
     else if builtins.isAttrs module then
