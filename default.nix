@@ -1,13 +1,13 @@
 { nixpkgs ? throw "Nixpkgs not provided." }:
 let
   load-module = args@{ lib, nixpkgs }:
-    final: module:
+    module:
     if builtins.isFunction module then
       load-module args (module args) null
     else if builtins.isString module then
-      load-module args final (./modules + "/${module}")
+      load-module args (./modules + "/${module}")
     else if builtins.isPath module then
-      load-module args final (import module)
+      load-module args (import module)
     else if builtins.isAttrs module then
       module
     else
