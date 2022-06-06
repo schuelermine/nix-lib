@@ -1,1 +1,1 @@
-{ outputs = { self }: import ./default.nix; }
+{ outputs = { self }: { lib = import ./default.nix; }; }
