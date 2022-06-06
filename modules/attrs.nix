@@ -13,14 +13,14 @@ with lib; rec {
   mapAttrNames = f: mapAttrsToAttrs (k: v: { ${f k} = v; });
   mapAttrsToValues = f: a: attrValues (mapAttrs f a);
   mapAttrsToAttrs = f: a: mergeAttrs (mapAttrsToValues f a);
-  getAttr = k: a:
+  getAttrDesc = k: a:
     if a ? ${k} then {
       key = k;
       value = a.${k};
     } else
       null;
   combineWith = f: a: b:
-    let g = k: _: f (getAttr k a) (getAttr k b);
+    let g = k: _: f (getAttrDesc k a) (getAttrDesc k b);
     in mapAttrs g (a // b);
   flattenAttrs = let f = k: v: if isAttrs v then v else { ${k} = v; };
   in mapAttrsToAttrs f;
