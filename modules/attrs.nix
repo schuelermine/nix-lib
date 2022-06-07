@@ -20,6 +20,9 @@ with lib; {
           loc = [ parent ] ++ loc;
         };
     in concatLists (mapAttrsToValues f a);
+  attrNamesRecursive = a:
+    let f = { loc, ... }: loc;
+    in map f (attrsToListRecursive a);
   listToAttrsRecursive = l:
     let f = { loc, value }: mkNestedAttrs loc value;
     in mergeAttrs (map f l);

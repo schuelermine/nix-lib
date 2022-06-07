@@ -15,10 +15,10 @@ let
           f a;
     in g { };
 in preCall ({ pkgs ? throw "Package set not provided"
-  , nixpkgs-lib ? throw "Nixpkgs library not provided", includeBuiltins ? true
-  , includeNixpkgsLib ? (builtins.tryEval nixpkgs-lib).success }:
+  , nixpkgsLib ? throw "Nixpkgs library not provided", includeBuiltins ? true
+  , includeNixpkgsLib ? (builtins.tryEval nixpkgsLib).success }:
   let
-    load-module = args@{ lib, nixpkgs-lib }:
+    load-module = args@{ lib, nixpkgsLib }:
       module:
       if builtins.isFunction module then
         load-module args (module args)
@@ -33,9 +33,9 @@ in preCall ({ pkgs ? throw "Package set not provided"
     fix-modules = modules:
       let
         lib = builtins.foldl' (a: b: a // b) { }
-          (builtins.map (load-module { inherit nixpkgs-lib lib; }) modules);
+          (builtins.map (load-module { inherit nixpkgsLib lib; }) modules);
       in lib;
     modules = builtins.attrNames (builtins.readDir ./modules)
       ++ (if includeBuiltins then [ builtins ] else [ ])
-      ++ (if includeNixpkgsLib then [ nixpkgs-lib ] else [ ]);
+      ++ (if includeNixpkgsLib then [ nixpkgsLib ] else [ ]);
   in fix-modules modules)
