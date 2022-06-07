@@ -9,16 +9,16 @@ with lib; rec {
       f = name: value:
         if isAttrs value then
           map (g name) (attrsToListRecursive value)
-        else {
+        else [{
           inherit value;
           loc = [ name ];
-        };
+        }];
       g = parent:
         { loc, value }: {
           inherit value;
           loc = [ parent ] ++ loc;
         };
-    in mapAttrsToValues f a;
+    in concatLists (mapAttrsToValues f a);
   filterAttrs = f: a:
     listToAttrs (filter ({ name, value }: f name value) (attrsToList a));
   filterAttrNames = f: a:
