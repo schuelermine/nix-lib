@@ -1,1 +1,1 @@
-{ lib, nixpkgs, ... }: with lib; with builtins; { }
+{ lib, nixpkgs-lib, ... }: with lib; with builtins; { }
