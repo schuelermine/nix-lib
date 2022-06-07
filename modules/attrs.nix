@@ -8,7 +8,7 @@ with lib; rec {
     let
       f = name: value:
         if isAttrs value then
-          mapAttrValues (g name) (attrsToListRecursive value)
+          map (g name) (attrsToListRecursive value)
         else {
           inherit name;
           loc = [ value ];
@@ -18,7 +18,7 @@ with lib; rec {
           inherit value;
           loc = [ parent ] ++ loc;
         };
-    in mapAttrsToAttrs f a;
+    in mapAttrsToValues f a;
   filterAttrs = f: a:
     listToAttrs (filter ({ name, value }: f name value) (attrsToList a));
   filterAttrNames = f: a:
