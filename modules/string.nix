@@ -1,5 +1,5 @@
 { lib, ... }:
-
+with builtins;
 with lib; {
   concatStrings = foldl' (c1: c2: c1 + c2) "";
   filterSplitSegments = str:

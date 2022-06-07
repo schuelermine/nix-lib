@@ -1,4 +1,5 @@
 { lib, ... }:
+with builtins;
 with lib; {
   guard = q: x: if q then x else null;
   guardNull = x: guard (x == null);

@@ -1,4 +1,5 @@
 { lib, ... }:
+with builtins;
 with lib; {
   readDirFiles = dir:
     let
