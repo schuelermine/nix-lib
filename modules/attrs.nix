@@ -2,6 +2,7 @@
 with builtins;
 with lib; {
   guard = q: x: if q then x else null;
+  guardNull = x: guard (x == null);
   attrsToList = let f = name: value: { inherit name value; };
   in mapAttrsToValues f;
   attrsToListRecursive = a:
@@ -24,8 +25,7 @@ with lib; {
     in mergeAttrs (map f l);
   filterAttrs = f: a:
     listToAttrs (filter ({ name, value }: f name value) (attrsToList a));
-  filterAttrNames = f: a:
-    listToAttrs (filter ({ name, ... }: f name) (attrsToList a));
+  filterAttrNames = f: filterAttrs (_: f);
   mergeAttrs = foldl' (a: b: a // b) { };
   mapAttrValues = f: mapAttrs (_: f);
   mapAttrNames = f: mapAttrsToAttrs (k: v: { ${f k} = v; });

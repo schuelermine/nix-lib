@@ -1,6 +1,6 @@
 { lib, ... }:
 with builtins;
-with lib; rec {
+with lib; {
   readDirFiles = dir:
     let
       dirContents = readDir dir;
