@@ -1,1 +1,1 @@
-{ outputs = { self }: { lib = preCall (import ./default.nix); }; }
+{ outputs = { self }: { lib = import ./default.nix; }; }
