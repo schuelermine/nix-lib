@@ -1,6 +1,6 @@
 { lib, ... }:
 with builtins;
-with lib; rec {
+with lib; {
   guard = q: x: if q then x else null;
   attrsToList = let f = name: value: { inherit name value; };
   in mapAttrsToValues f;
@@ -19,6 +19,9 @@ with lib; rec {
           loc = [ parent ] ++ loc;
         };
     in concatLists (mapAttrsToValues f a);
+  listToAttrsRecursive = l:
+    let f = { loc, value }: mkNestedAttrs loc value;
+    in mergeAttrs (map f l);
   filterAttrs = f: a:
     listToAttrs (filter ({ name, value }: f name value) (attrsToList a));
   filterAttrNames = f: a:
@@ -45,5 +48,4 @@ with lib; rec {
     else {
       ${head path} = mkNestedAttrs (tail path) value;
     };
-
 }
