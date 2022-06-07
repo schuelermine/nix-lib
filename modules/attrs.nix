@@ -2,8 +2,23 @@
 with builtins;
 with lib; rec {
   guard = q: x: if q then x else null;
-  attrsToList = let f = key: value: { inherit key value; };
+  attrsToList = let f = name: value: { inherit name value; };
   in mapAttrsToValues f;
+  attrsToListRecursive = a:
+    let
+      f = name: value:
+        if isAttrs value then
+          mapAttrValues (g name) (attrsToListRecursive value)
+        else {
+          inherit name;
+          loc = [ value ];
+        };
+      g = parent:
+        { loc, value }: {
+          inherit value;
+          loc = [ parent ] ++ loc;
+        };
+    in mapAttrsToAttrs f a;
   filterAttrs = f: a:
     listToAttrs (filter ({ name, value }: f name value) (attrsToList a));
   filterAttrNames = f: a:
@@ -24,4 +39,11 @@ with lib; rec {
     in mapAttrs g (a // b);
   flattenAttrs = let f = k: v: if isAttrs v then v else { ${k} = v; };
   in mapAttrsToAttrs f;
+  mkNestedAttrs = path: value:
+    if path == [ ] then
+      value
+    else {
+      ${head path} = mkNestedAttrs (tail path) value;
+    };
+
 }
