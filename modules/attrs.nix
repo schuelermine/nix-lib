@@ -11,7 +11,7 @@ with lib; rec {
           map (g name) (attrsToListRecursive value)
         else {
           inherit value;
-          loc = [ value ];
+          loc = [ name ];
         };
       g = parent:
         { loc, value }: {
