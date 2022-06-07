@@ -1,59 +1,54 @@
-self:
-with self; rec {
-  merge = s1: s2: s1 // s2;
-  mergeWith = f: g: h: s1: s2:
-    mergeList (map (k:
-      if s1 ? ${k} then
-        if s2 ? ${k} then {
-          ${k} = f s1.${k} s2.${k};
-        } else {
-          ${k} = g s1.${k};
-        }
-      else {
-        ${k} = h s2.${k};
-      }) ((builtins.attrNames s1) ++ builtins.attrNames s2));
-  mergeR = s1: s2: null;
-  toList = mapToValues (name: value: { inherit name value; });
-  toItems = mapToValues (k: v: [ k v ]);
-  itemToPair = s: [ s.name s.value ];
-  fromItem = s: { ${s.name or null} = s.value; };
-  singleton = k: v: { ${k} = v; };
-  mergeList = builtins.foldl' merge { };
-  mapViaItems = f: s: builtins.listToAttrs (mapToValues f s);
-  mapX = f: s: mergeList (mapToValues f s);
-  mapToValues = f: s: builtins.attrValues (builtins.mapAttrs f s);
-  mapToValuesX = f: s: builtins.concatLists (mapToValues f s);
-  mapOverValues = f: builtins.mapAttrs (_: f);
-  mapOverNames = f: mapX (k: v: { ${f k} = v; });
-  filter = p: mapX (k: v: { ${if p k v then k else null} = v; });
-  flatten = flattenWith (_: x: x);
-  flattenR = flattenRWith (_: x: x);
-  flattenDot = flattenWith (x: y: "${x}.${y}");
-  flattenRDot = flattenRWith (x: y: "${x}.${y}");
-  flattenWith = f:
-    mapX (k: v: if builtins.isAttrs v then mapOverNames (f k) v else v);
-  flattenRWith = f:
-    mapX (k: v:
-      if builtins.isAttrs v then
-        mapOverNames (f k) (flattenWithR f v)
-      else {
-        ${k} = v;
-      });
-  toLocList = mapToValues (name: value: {
-    loc = [ name ];
-    inherit value;
-  });
-  toLocListR = s:
-    builtins.concatLists (mapToValues (name: value:
-      if builtins.isAttrs value then
-        map (item: item // { loc = [ name ] ++ item.loc; }) (toLocListR value)
-      else [{
-        inherit value;
-        loc = [ name ];
-      }]) s);
-  navigate = path: set:
+{ lib, ... }:
+with builtins;
+with lib; {
+  guard = q: x: if q then x else null;
+  guardNull = x: guard (x == null);
+  attrsToList = let f = name: value: { inherit name value; };
+  in mapAttrsToValues f;
+  attrsToListRecursive = a:
+    let
+      f = name: value:
+        if isAttrs value then
+          map (g name) (attrsToListRecursive value)
+        else [{
+          inherit value;
+          loc = [ name ];
+        }];
+      g = parent:
+        { loc, value }: {
+          inherit value;
+          loc = [ parent ] ++ loc;
+        };
+    in concatLists (mapAttrsToValues f a);
+  attrNamesRecursive = a:
+    let f = { loc, ... }: loc;
+    in map f (attrsToListRecursive a);
+  listToAttrsRecursive = l:
+    let f = { loc, value }: mkNestedAttrs loc value;
+    in mergeAttrs (map f l);
+  filterAttrs = f: a:
+    listToAttrs (filter ({ name, value }: f name value) (attrsToList a));
+  filterAttrNames = f: filterAttrs (_: f);
+  mergeAttrs = foldl' (a: b: a // b) { };
+  mapAttrValues = f: mapAttrs (_: f);
+  mapAttrNames = f: mapAttrsToAttrs (k: v: { ${f k} = v; });
+  mapAttrsToValues = f: a: attrValues (mapAttrs f a);
+  mapAttrsToAttrs = f: a: mergeAttrs (mapAttrsToValues f a);
+  getAttrDesc = k: a:
+    if a ? ${k} then {
+      key = k;
+      value = a.${k};
+    } else
+      null;
+  combineWith = f: a: b:
+    let g = k: _: f (getAttrDesc k a) (getAttrDesc k b);
+    in mapAttrs g (a // b);
+  flattenAttrs = let f = k: v: if isAttrs v then v else { ${k} = v; };
+  in mapAttrsToAttrs f;
+  mkNestedAttrs = path: value:
     if path == [ ] then
-      set
-    else
-      navigate (builtins.tail path) set.${builtins.head path};
+      value
+    else {
+      ${head path} = mkNestedAttrs (tail path) value;
+    };
 }

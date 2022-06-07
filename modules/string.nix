@@ -1,32 +1,11 @@
-self:
-with self; rec {
-  chars = str:
-    builtins.concatLists
-    (map (x: if builtins.isList x then x else if x == "" then [ ] else [ x ])
-      (builtins.split "" str));
-  concat = builtins.foldl' (x: y: x + y) "";
-  escapeRegexChar = char:
-    if builtins.elem char [
-      "["
-      "]"
-      "."
-      "\\"
-      "("
-      ")"
-      "+"
-      "*"
-      "?"
-      "<"
-      ">"
-      ":"
-      "-"
-      "$"
-      "^"
-      "|"
-    ] then
-      "\\" + char
-    else
-      char;
-  escapeRegex = str: concatStrings (map escapeRegexChar (chars str));
-  isChar = str: builtins.stringLength str == 1;
+{ lib, nixpkgsLib, ... }:
+with builtins;
+with lib; {
+  concatStrings = foldl' (c1: c2: c1 + c2) "";
+  filterSplitSegments = str:
+    concatLists
+    (map (x: if isList x then x else if x == "" then [ ] else [ x ]) str);
+  splitToChars = str: filterSplitSegments (split "" str);
+  asChars = f: str: concatStrings (f (splitToChars str));
+  capitalize = asChars (asHead nixpkgsLib.toUpper);
 }
