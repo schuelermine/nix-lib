@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, nixpkgsLib, ... }:
 with builtins;
 with lib; {
   concatStrings = foldl' (c1: c2: c1 + c2) "";
@@ -7,5 +7,5 @@ with lib; {
     (map (x: if isList x then x else if x == "" then [ ] else [ x ]) str);
   splitToChars = str: filterSplitSegments (split "" str);
   asChars = f: str: concatStrings (f (splitToChars str));
-  capitalize = asChars (asHead toUpper);
+  capitalize = asChars (asHead nixpkgsLib.toUpper);
 }
