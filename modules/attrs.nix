@@ -10,7 +10,7 @@ with lib; rec {
         if isAttrs value then
           map (g name) (attrsToListRecursive value)
         else {
-          inherit name;
+          inherit value;
           loc = [ value ];
         };
       g = parent:
