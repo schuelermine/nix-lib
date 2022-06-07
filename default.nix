@@ -17,5 +17,5 @@ let
       lib = builtins.foldl' (a: b: a // b) { }
         (builtins.map (load-module { inherit nixpkgs lib; }) modules);
     in lib;
-  modules = builtins.attrNames (builtins.readDir ./modules);
+  modules = builtins.attrNames (builtins.readDir ./modules) ++ [ builtins ];
 in fix-modules modules

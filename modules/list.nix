@@ -1,5 +1,4 @@
 { lib, ... }:
-with builtins;
 with lib; {
   cons = x: xs: [ x ] ++ xs;
   asCons = f1: f2: xs: cons (f1 (head xs)) (f2 (tail xs));
