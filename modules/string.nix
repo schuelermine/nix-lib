@@ -8,4 +8,8 @@ with lib; {
   splitToChars = str: filterSplitSegments (split "" str);
   asChars = f: str: concatStrings (f (splitToChars str));
   capitalize = asChars (asHead nixpkgsLib.toUpper);
+  splitToWords = str: filterSplitSegments (split " " str);
+  asWords = f: str: concatStringsSep " " (f (splitToWords str));
+  snakeCase = str:
+    concatStringsSep "" (asTail (map capitalize) (splitToWords str));
 }
