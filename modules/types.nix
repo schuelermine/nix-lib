@@ -1,4 +1,4 @@
-{ lib, nixpkgsLib }:
+{ lib, nixpkgsLib, ... }:
 with lib;
 with nixpkgsLib;
 with builtins; {
