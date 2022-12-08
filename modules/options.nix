@@ -15,7 +15,7 @@ with builtins; {
       type = mkProvidesType args;
       default = { };
     };
-  mkProvidesOptionSet = args@{ providedText
+  mkProvidesOptionSet = { providedText
     , initialProvidedText ? capitalize providedText, defaultPackage ? null
     , defaultPackageText ? "null", packageExample ? null, keyName ? "name"
     , keyType ? types.nullOr types.str, defaultKey ? null
